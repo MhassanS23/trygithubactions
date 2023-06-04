@@ -34,7 +34,7 @@
   # test action works running from the graph
 
 
-# name: telegram message
+name: telegram message
 on: pull_request:
       types: [opened, edited, synchronize]
       branches:
