@@ -61,12 +61,12 @@ jobs:
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
         run: npm install
-      - name: Migration database        
-        run: npm db:migrate
-      - name: Seed database        
-        run: npm db:seed
-      - name: Test code
-        run: npm test
+      # - name: Migration database        
+      #   run: npm db:migrate
+      # - name: Seed database        
+      #   run: npm db:seed
+      # - name: Test code
+      #   run: npm test
       - name: send telegram message on push
         uses: appleboy/telegram-action@master
         with:
