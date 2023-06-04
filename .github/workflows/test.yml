@@ -35,8 +35,7 @@
 
 
 name: telegram message
-on: pull_request:
-      types: [opened, reopened]
+on: [push]
 jobs:
 
   build:
