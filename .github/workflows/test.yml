@@ -1,49 +1,22 @@
-name: "units-test"
-on:
-  pull_request:
-    types: [opened, edited, synchronize]
-    branches:
-      - releases
+# name: "units-test"
+# on:
+#   pull_request:
+#     types: [opened, edited, synchronize]
+#     branches:
+#       - releases
 
-jobs:
-  # unit tests
-  units:
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    env:
-      DB_HOST: ${{ secrets.DB_HOST }}
-      DB_NAME: ${{ secrets.DB_NAME }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      DB_PORT: ${{ secrets.DB_PORT }}
-      DB_USER: ${{ secrets.DB_USER }}
-      SECRET_KEY: secret
-    steps:
-    - name: send telegram message on push
-      uses: appleboy/telegram-action@master
-      with:
-        to: ${{ secrets.TELEGRAM_TO }}
-        token: ${{ secrets.TELEGRAM_TOKEN }}
-        message: |
-          ${{ github.actor }} created commit:
-          Commit message: ${{ github.event.commits[0].message }}
-            
-          Repository: ${{ github.repository }}
-            
-          See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
-
-  # test action works running from the graph
-
-
-# name: telegram message
-# on: pull_request:
-#       types: [opened, edited, synchronize]
-#       branches:
-#         - releases
 # jobs:
-
-#   build:
-#     name: Build
+#   # unit tests
+#   units:
 #     runs-on: ubuntu-latest
+#     continue-on-error: true
+#     env:
+#       DB_HOST: ${{ secrets.DB_HOST }}
+#       DB_NAME: ${{ secrets.DB_NAME }}
+#       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+#       DB_PORT: ${{ secrets.DB_PORT }}
+#       DB_USER: ${{ secrets.DB_USER }}
+#       SECRET_KEY: secret
 #     steps:
 #       - name: send telegram message on push
 #         uses: appleboy/telegram-action@master
@@ -53,7 +26,34 @@ jobs:
 #           message: |
 #             ${{ github.actor }} created commit:
 #             Commit message: ${{ github.event.commits[0].message }}
-            
+              
 #             Repository: ${{ github.repository }}
-            
+              
 #             See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
+
+  # test action works running from the graph
+
+
+# name: telegram message
+on: pull_request:
+      types: [opened, edited, synchronize]
+      branches:
+        - releases
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: send telegram message on push
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            ${{ github.actor }} created commit:
+            Commit message: ${{ github.event.commits[0].message }}
+            
+            Repository: ${{ github.repository }}
+            
+            See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
