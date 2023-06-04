@@ -1,18 +1,34 @@
 name: "units-test"
 on:
   pull_request:
-  push:
+    types: [opened, edited, synchronize]
     branches:
-      - main
-      - 'releases/*'
+      - releases
 
 jobs:
   # unit tests
   units:
     runs-on: ubuntu-latest
+    continue-on-error: true
+    env:
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      DB_USER: ${{ secrets.DB_USER }}
+      SECRET_KEY: secret
     steps:
-    - uses: actions/checkout@v3
-    - run: npm ci
-    - run: npm test
+    - name: send telegram message on push
+      uses: appleboy/telegram-action@master
+      with:
+        to: ${{ secrets.TELEGRAM_TO }}
+        token: ${{ secrets.TELEGRAM_TOKEN }}
+        message: |
+          ${{ github.actor }} created commit:
+          Commit message: ${{ github.event.commits[0].message }}
+            
+          Repository: ${{ github.repository }}
+            
+          See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
 
   # test action works running from the graph

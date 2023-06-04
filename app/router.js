@@ -1,16 +1,50 @@
-const express = require('express')
-const { Task } = require('./models')
-const TaskController = require('./controllers/TaskController')
+const express = require("express");
+const jwt = require("jsonwebtoken");
+const dayjs = require("dayjs");
+const bcrypt = require("bcryptjs");
 
-// Bootstraping Application
-const taskController = new TaskController({ taskModel: Task })
+const {
+  ApplicationController,
+  AuthenticationController,
+  CarController,
+} = require("./controllers");
 
-const router = express.Router()
+const {
+  User,
+  Role,
+  Car,
+  UserCar,
+} = require("./models");
 
-router.post('/v1/tasks', taskController.handleCreateTask)
-router.get('/v1/tasks', taskController.handleListTasks)
-router.get('/v1/tasks/:id', taskController.handleGetTask)
-router.put('/v1/tasks/:id', taskController.handleUpdateTask)
-router.delete('/v1/tasks/:id', taskController.handleDeleteTask)
+function apply(app) {
+  const carModel = Car;
+  const roleModel = Role;
+  const userModel = User;
+  const userCarModel = UserCar;
 
-module.exports = router
+  const applicationController = new ApplicationController();
+  const authenticationController = new AuthenticationController({ bcrypt, jwt, roleModel, userModel, });
+  const carController = new CarController({ carModel, userCarModel, dayjs });
+
+  const accessControl = authenticationController.accessControl;
+
+  app.get("/", applicationController.handleGetRoot);
+
+  app.get("/v1/cars", carController.handleListCars);
+  app.post("/v1/cars", authenticationController.authorize(accessControl.ADMIN), carController.handleCreateCar);
+  app.post("/v1/cars/:id/rent", authenticationController.authorize(accessControl.CUSTOMER), carController.handleRentCar);
+  app.get("/v1/cars/:id", carController.handleGetCar);
+  app.put("/v1/cars/:id", authenticationController.authorize(accessControl.ADMIN), carController.handleUpdateCar);
+  app.delete("/v1/cars/:id", authenticationController.authorize(accessControl.ADMIN), carController.handleDeleteCar);
+
+  app.post("/v1/auth/login", authenticationController.handleLogin);
+  app.post("/v1/auth/register", authenticationController.handleRegister);
+  app.get("/v1/auth/whoami", authenticationController.authorize(accessControl.CUSTOMER), authenticationController.handleGetUser);
+
+  app.use(applicationController.handleNotFound);
+  app.use(applicationController.handleError);
+
+  return app;
+};
+
+module.exports = { apply, }
