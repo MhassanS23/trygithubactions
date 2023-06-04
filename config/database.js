@@ -1,23 +1,30 @@
-const path = require('path')
-const DB_DEVELOPMENT_FILE_PATH = path.join(
-  __dirname,
-  '../db/development.sqlite'
-)
-const DB_TEST_FILE_PATH = path.join(__dirname, '../db/test.sqlite')
-const DB_PRODUCTION_FILE_PATH = path.join(__dirname, '../db/production.sqlite')
+require('dotenv').config()
+
+const { DB_USER, DB_PASSWORD, DB_NAME, DB_HOST, DB_PORT } = process.env;
 
 module.exports = {
   development: {
-    storage: DB_DEVELOPMENT_FILE_PATH,
-    dialect: 'sqlite'
+    username: DB_USER,
+    password: DB_PASSWORD,
+    database: DB_NAME,
+    host: DB_HOST,
+    port: DB_PORT,
+    dialect: "postgres"
   },
   test: {
-    storage: DB_TEST_FILE_PATH,
-    logging: false,
-    dialect: 'sqlite'
+    username: DB_USER,
+    password: DB_PASSWORD,
+    database: DB_NAME,
+    host: DB_HOST,
+    port: DB_PORT,
+    dialect: "postgres"
   },
   production: {
-    storage: DB_PRODUCTION_FILE_PATH,
-    dialect: 'sqlite'
+    username: DB_USER,
+    password: DB_PASSWORD,
+    database: DB_NAME,
+    host: DB_HOST,
+    port: DB_PORT,
+    dialect: "postgres"
   }
 }
