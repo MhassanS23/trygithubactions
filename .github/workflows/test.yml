@@ -66,8 +66,7 @@ jobs:
       # - name: Seed database        
       #   run: npm run db:seed
       - name: Test code
-        run: npm ci
-        run: npm test
+        run: npm run test
       - name: send telegram message on push
         uses: appleboy/telegram-action@master
         with:
