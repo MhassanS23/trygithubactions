@@ -63,7 +63,7 @@ jobs:
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
             ${{ github.actor }} want to make pull request:
-            pull request message: ${{ github.event.pull_request.head.message }}
+            pull request message: ${{ github.event.pull_request.head.message.sha }}
             
             Repository: ${{ github.repository }}
             
