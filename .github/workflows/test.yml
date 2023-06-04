@@ -36,9 +36,7 @@
 
 name: telegram message
 on: pull_request:
-      types: [opened, edited, synchronize]
-      branches:
-        - releases
+      types: [opened, reopened]
 jobs:
 
   build:
