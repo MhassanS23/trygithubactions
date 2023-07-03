@@ -78,15 +78,9 @@ jobs:
       - run: npm install
       - run: npm ci
       - run: npm run build --if-present
-      - name: send telegram message on push
-        uses: appleboy/telegram-action@master
+      - name: send discord message on pull request
+        uses: rjstone/discord-webhook-notify@v1
         with:
-          to: ${{ secrets.TELEGRAM_TO }}
-          token: ${{secrets.TELEGRAM_TOKEN}}
-          message: |
-            ${{ github.actor }} want to make pull request:
-            pull request message: ${{ github.event.pull_request.head.message.sha }}
-            
-            Repository: ${{ github.repository }}
-            
-            See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
+          severity: info
+          details: Test warning.
+          webhookUrl: ${{ secrets.URL_WEBHOOK_DC }}
