@@ -89,8 +89,8 @@ jobs:
           echo "DB_HOST=${DB_HOST}" >> .env
           echo "DB_PORT=${DB_PORT}" >> .env
       - run: npm install
-      - run: npm db:migrate
-      - run: npm db:seed
+      - run: npm run db:migrate
+      - run: npm run db:seed
       - run: npm ci
       - run: npm run build --if-present
       - run: npm test
