@@ -28,6 +28,8 @@
     "swagger-ui-express": "^4.4.0"
   },
   "devDependencies": {
+    "eslint": "^8.42.0",
+    "eslint-plugin-react": "^7.32.2",
     "nodemon": "^2.0.16"
   }
 }

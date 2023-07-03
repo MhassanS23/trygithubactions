@@ -1,40 +1,4 @@
-# name: "units-test"
-# on:
-#   pull_request:
-#     types: [opened, edited, synchronize]
-#     branches:
-#       - releases
-
-# jobs:
-#   # unit tests
-#   units:
-#     runs-on: ubuntu-latest
-#     continue-on-error: true
-#     env:
-#       DB_HOST: ${{ secrets.DB_HOST }}
-#       DB_NAME: ${{ secrets.DB_NAME }}
-#       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-#       DB_PORT: ${{ secrets.DB_PORT }}
-#       DB_USER: ${{ secrets.DB_USER }}
-#       SECRET_KEY: secret
-#     steps:
-#       - name: send telegram message on push
-#         uses: appleboy/telegram-action@master
-#         with:
-#           to: ${{ secrets.TELEGRAM_TO }}
-#           token: ${{ secrets.TELEGRAM_TOKEN }}
-#           message: |
-#             ${{ github.actor }} created commit:
-#             Commit message: ${{ github.event.commits[0].message }}
-              
-#             Repository: ${{ github.repository }}
-              
-#             See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
-
-  # test action works running from the graph
-
-
-name: telegram message
+name: Testing
 on: 
   pull_request:
       # Sequence of patterns matched against refs/heads
@@ -44,6 +8,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    continue-on-error: true
     env:
       DB_HOST: ${{ secrets.DB_HOST }}
       DB_NAME: ${{ secrets.DB_NAME }}
@@ -61,17 +26,19 @@ jobs:
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
         run: npm install
-      # - name: Migration database        
-      #   run: npm db:migrate
-      # - name: Seed database        
-      #   run: npm db:seed
-      # - name: Test code
-      #   run: npm test
+      - name: Migration undo
+        run: npm run db:migrate:undo
+      - name: Migration database        
+        run: npm db:migrate
+      - name: Seed database        
+        run: npm db:seed
+      - name: Test code
+        run: npm test
       - name: send telegram message on push
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_TO }}
-          token: ${{ secrets.TELEGRAM_TOKEN }}
+          token: ${{secrets.TELEGRAM_TOKEN}}
           message: |
             ${{ github.actor }} want to make pull request:
             pull request message: ${{ github.event.pull_request.head.message.sha }}
