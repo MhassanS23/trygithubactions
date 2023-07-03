@@ -10,31 +10,26 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      this.belongsTo(models.Role, {
-        foreignKey: 'roleId',
-      });
-    }
-
-    toJSON() {
-      return {
-        id: this.id,
-        name: this.name,
-        email: this.email,
-        image: this.image,
-        createdAt: this.createdAt,
-        updatedAt: this.updatedAt,
-      }
+      this.hasMany(models.Notification, {
+        foreignKey:'userId',
+        as: 'user_notif'
+      })
+      this.hasMany(models.Transaction, {
+        foreignKey:'user_id',
+      })
     }
   }
   User.init({
-    name: DataTypes.STRING,
+    nama: DataTypes.STRING,
     email: DataTypes.STRING,
-    image: DataTypes.STRING,
-    encryptedPassword: DataTypes.STRING,
-    roleId: DataTypes.INTEGER
+    password: DataTypes.STRING,
+    phone: DataTypes.STRING,
+    role: DataTypes.STRING,
+    isVerified: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'User',
+    // paranoid: true,
   });
   return User;
 };
