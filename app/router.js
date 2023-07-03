@@ -16,7 +16,7 @@ const {
   UserCar,
 } = require("./models");
 
-  //testt
+  //test
 
 function apply(app) {
   const carModel = Car;
