@@ -62,13 +62,13 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x, 16.x, 18.x, 20.x]
+        node-version: [14.x, 16.x]
     env:
-      DB_HOST: ${{ secrets.DB_HOST }}
-      DB_NAME: ${{ secrets.DB_NAME }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      DB_PORT: ${{ secrets.DB_PORT }}
-      DB_USER: ${{ secrets.DB_USER }}
+      DB_HOST: "127.0.0.1"
+      DB_NAME: "bcr"
+      DB_PASSWORD: "ramadhani36677"
+      DB_PORT: 5432
+      DB_USER: "postgres"
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
