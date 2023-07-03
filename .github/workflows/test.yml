@@ -1,48 +1,75 @@
-name: Testing
-on: 
-  pull_request:
-      # Sequence of patterns matched against refs/heads
-      branches:    
-        - main
-jobs:
+# name: Testing
+# on: 
+#   pull_request:
+#       # Sequence of patterns matched against refs/heads
+#       branches:    
+#         - main
+# jobs:
 
-  test:
+#   test:
+#     runs-on: ubuntu-latest
+#     continue-on-error: true
+#     env:
+#       DB_HOST: ${{ secrets.DB_HOST }}
+#       DB_NAME: ${{ secrets.DB_NAME }}
+#       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+#       DB_PORT: ${{ secrets.DB_PORT }}
+#       DB_USER: ${{ secrets.DB_USER }}
+#     steps:
+#       - name: Get code
+#         uses: actions/checkout@v3
+#       - name: Cache dependencies
+#         id: cache
+#         uses: actions/cache@v3
+#         with:
+#           path: ~/.npm
+#           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+#       - name: Install dependencies
+#         run: npm install
+#       - name: Migration undo
+#         run: npm run db:migrate:undo:all
+#       - name: Migration database        
+#         run: npm run db:migrate
+#       - name: Seed database        
+#         run: npm run db:seed
+#       - name: Test code
+#         run: npm run test
+#       - name: send telegram message on push
+#         uses: appleboy/telegram-action@master
+#         with:
+#           to: ${{ secrets.TELEGRAM_TO }}
+#           token: ${{secrets.TELEGRAM_TOKEN}}
+#           message: |
+#             ${{ github.actor }} want to make pull request:
+#             pull request message: ${{ github.event.pull_request.head.message.sha }}
+            
+#             Repository: ${{ github.repository }}
+            
+#             See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
+
+
+name: Node.js CI
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
     runs-on: ubuntu-latest
-    continue-on-error: true
-    env:
-      DB_HOST: ${{ secrets.DB_HOST }}
-      DB_NAME: ${{ secrets.DB_NAME }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      DB_PORT: ${{ secrets.DB_PORT }}
-      DB_USER: ${{ secrets.DB_USER }}
+
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x, 18.x, 20.x]
+
     steps:
-      - name: Get code
-        uses: actions/checkout@v3
-      - name: Cache dependencies
-        id: cache
-        uses: actions/cache@v3
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
         with:
-          path: ~/.npm
-          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
-      - name: Install dependencies
-        run: npm install
-      - name: Migration undo
-        run: npm run db:migrate:undo:all
-      - name: Migration database        
-        run: npm run db:migrate
-      - name: Seed database        
-        run: npm run db:seed
-      - name: Test code
-        run: npm run test
-      - name: send telegram message on push
-        uses: appleboy/telegram-action@master
-        with:
-          to: ${{ secrets.TELEGRAM_TO }}
-          token: ${{secrets.TELEGRAM_TOKEN}}
-          message: |
-            ${{ github.actor }} want to make pull request:
-            pull request message: ${{ github.event.pull_request.head.message.sha }}
-            
-            Repository: ${{ github.repository }}
-            
-            See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
+          node-version: ${{ matrix.node-version }}
+      - run: npm ci
+      - run: npm run build --if-present
+      - run: npm test
