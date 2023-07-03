@@ -62,7 +62,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x, 16.x]
+        node-version: [14.x]
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
@@ -82,5 +82,5 @@ jobs:
         uses: rjstone/discord-webhook-notify@v1
         with:
           severity: info
-          details: Test warning.
+          details: OY KAWANKU ADA YANG MAU MERGE KE MAIN NIHH!!
           webhookUrl: ${{ secrets.URL_WEBHOOK_DC }}
